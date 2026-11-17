@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — Caden Martin</title>
+  <meta name="description" content="Contact Caden Martin, mechanical engineer. Biography, experience and resume.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu"><span class="open">Menu</span><span class="close">Close</span></button>
+  <nav class="menu" id="menu" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="index.html#works">Works</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main>
+    <section class="contact-hero wrap">
+      <h1 class="reveal">Get in touch</h1>
+      <div class="contact-lines reveal">
+        <a class="email" data-email="czm1000|gmail.com" href="#"><span data-email-text>Email</span></a>
+        <a href="https://www.instagram.com/rbzed25/" target="_blank" rel="noopener">Instagram<span class="sub">@rbzed25</span></a>
+        <a href="assets/docs/Caden-Martin-Resume.pdf" target="_blank" rel="noopener" data-optional>Resume<span class="sub">PDF</span></a>
+      </div>
+    </section>
+
+    <section class="section wrap" style="padding-top:0">
+      <div class="bio">
+        <div class="bio-portrait reveal"><img src="assets/img/portrait.webp" alt="Caden Martin at Pikes Peak with the 992 TT Cup" width="1200" height="1600" loading="lazy"></div>
+        <div class="bio-blocks">
+          <h2 class="reveal">About me</h2>
+          <div class="reveal">
+            <p class="label">What I do</p>
+            <p>I design parts for race cars doing ten tenths on the track. Maximum attack.</p>
+          </div>
+          <div class="reveal">
+            <p class="label">My background</p>
+            <p>My passion began with the purchase of a 1975 Datsun 280Z back in 2019. Ever since then I have been addicted to improving it. After graduating with my mechanical engineering degree, I started work at BBi Autosport.</p>
+          </div>
+          <div class="reveal">
+            <p class="label">My approach</p>
+            <p>Every design takes time, and many revisions. There is no such thing as perfect, as it can always be lighter, stronger, or more beautiful. The trick is finding the happy medium between perfectionism and actually finishing a design.</p>
+          </div>
+          <div class="reveal">
+            <p class="label">Career</p>
+            <div class="timeline">
+              <div><span>2024 – Now</span>Lead Engineer, BBi Autosport</div>
+              <div><span>2017 – 2024</span>Mechanical Engineering Student</div>
+            </div>
+          </div>
+          <div class="reveal">
+            <p class="label">Capabilities</p>
+            <div class="timeline">
+              <div><span>3D scanning</span>Small parts to full cars, including scan preparation and post-processing into clean, usable data.</div>
+              <div><span>CAD modeling</span>Thousands of hours in SolidWorks at a professional level.</div>
+              <div><span>FEA</span>SolidWorks Simulation, ANSYS and FEMAP: static studies, topology optimization and flow optimization.</div>
+              <div><span>Suspension</span>Ground-up suspension design: swing arms, camber change, caster and custom pickup points tailored to the car.</div>
+            </div>
+          </div>
+          <div class="reveal" data-optional-wrap>
+            <a class="btn" href="assets/docs/Caden-Martin-Resume.pdf" target="_blank" rel="noopener" data-optional>Download resume</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <small style="margin-top:0">©<span data-year>2026</span> Caden Martin</small>
+    </div>
+  </footer>
+
+  <script src="assets/js/site.js"></script>
+  <script>
+    // Hide resume links until the PDF has been added to assets/docs/
+    document.querySelectorAll('[data-optional]').forEach(a => {
+      fetch(a.getAttribute('href'), { method: 'HEAD' }).then(r => { if (!r.ok) throw 0; })
+        .catch(() => { (a.closest('[data-optional-wrap]') || a).style.display = 'none'; });
+    });
+  </script>
+</body>
+</html>
