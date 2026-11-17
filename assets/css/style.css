@@ -84,7 +84,7 @@ h3 { font-size: 18px; letter-spacing: -0.06em; line-height: 1.15; }
 .trail { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
 .trail img {
   position: absolute; left: 0; top: 0;
-  width: clamp(140px, 14vw, 220px); height: auto;
+  width: clamp(110px, 11vw, 170px); height: auto;
   border-radius: 2px;
   transform: translate(-50%, -50%) scale(.6);
   opacity: 0;
