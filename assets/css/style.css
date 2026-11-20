@@ -73,7 +73,7 @@ h3 { font-size: 18px; letter-spacing: -0.06em; line-height: 1.15; }
 
 /* ---------- Home hero + mouse trail ---------- */
 .hero {
-  position: relative; height: 100vh; height: 100svh; min-height: 520px;
+  position: relative; z-index: 1; background: var(--bg); height: 100vh; height: 100svh; min-height: 520px;
   display: grid; place-items: center; text-align: center;
   overflow: hidden; isolation: isolate;
 }
@@ -97,10 +97,35 @@ h3 { font-size: 18px; letter-spacing: -0.06em; line-height: 1.15; }
   66.667% { opacity: 1; transform: translate(-50%, -50%) scale(1); }    /* 0.6s: start fade out */
   100%    { opacity: 0; transform: translate(-50%, -50%) scale(.92); }  /* 0.9s: gone */
 }
-.scroll-cue {
-  position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-  font-size: 12px; text-transform: uppercase; color: var(--muted); z-index: 2;
+@font-face {
+  font-family: "Permanent Marker";
+  src: url("../fonts/permanent-marker.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
 }
+/* Hand-drawn "Works" with a marker arrow, a little crooked on purpose */
+.scroll-cue {
+  position: absolute; bottom: clamp(14px, 3vh, 28px); left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  color: #f2f2f2; text-transform: none;
+}
+.cue-word {
+  font-family: "Permanent Marker", "Marker Felt", "Comic Sans MS", cursive;
+  font-size: clamp(39px, 3.9vw, 54px); line-height: 1; letter-spacing: 0.01em;
+  transform: rotate(-7deg) translateX(-6px);
+  transition: transform .3s ease;
+}
+.cue-arrow {
+  width: clamp(28px, 2.6vw, 38px); height: auto; overflow: visible;
+  transform: rotate(6deg) translateX(8px);
+  animation: cue-bob 1.8s ease-in-out infinite;
+}
+.cue-arrow path { fill: none; stroke: currentColor; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.scroll-cue:hover .cue-word, .scroll-cue:focus-visible .cue-word { transform: rotate(-10deg) translateX(-6px) scale(1.05); }
+@keyframes cue-bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .cue-arrow { animation: none; } }
 
 /* ---------- Works list ---------- */
 .section { padding-top: clamp(64px, 10vw, 140px); padding-bottom: clamp(64px, 10vw, 140px); }
@@ -296,3 +321,127 @@ h3 { font-size: 18px; letter-spacing: -0.06em; line-height: 1.15; }
 /* Project video */
 .video-wrap { display: flex; justify-content: center; background: var(--bg-raised); margin-bottom: 10px; }
 .video-wrap video { display: block; max-width: 100%; max-height: 80vh; max-height: 80svh; width: auto; height: auto; background: #000; }
+
+
+/* ---------- Home: hero + full-screen works slider, snapping between the two ---------- */
+html.snap { scroll-snap-type: y mandatory; }
+html.snap .hero, html.snap .works { scroll-snap-align: start; scroll-snap-stop: always; }
+.works-slider {
+  position: relative; height: 100vh; height: 100svh; min-height: 480px;
+  overflow: hidden; background: #000;
+}
+.slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility 0s .7s; }
+.slide.is-active { opacity: 1; visibility: visible; transition: opacity .7s ease; }
+.slide img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.04); transition: transform 6s ease; }
+.slide.is-active img { transform: scale(1); }
+.slide::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.25) 100%); }
+.slide-text { position: absolute; left: var(--pad); right: calc(var(--pad) + 80px); bottom: clamp(40px, 8vh, 80px); z-index: 2; }
+.slide-text .label { color: rgba(255,255,255,.75); margin-bottom: 10px; }
+.slide-text h2 { font-size: clamp(44px, 8vw, 120px); line-height: .92; letter-spacing: -0.06em; }
+.slide-text h2 a { display: inline-flex; align-items: baseline; gap: .25em; text-shadow: 0 2px 30px rgba(0,0,0,.5); }
+.slide-text .go { font-size: .45em; transition: transform .3s ease; }
+.slide-text h2 a:hover .go, .slide-text h2 a:focus-visible .go { transform: translateX(.3em); }
+.slide-text h2 a:hover { color: #fff; opacity: .85; }
+.slide-next {
+  position: absolute; right: var(--pad); top: 50%; transform: translateY(-50%); z-index: 3;
+  width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center;
+  color: #fff; background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.5);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  cursor: pointer; transition: background .25s ease, transform .25s ease;
+}
+.slide-next:hover, .slide-next:focus-visible { background: rgba(255,255,255,.15); transform: translateY(-50%) translateX(3px); }
+.slide-count { position: absolute; right: var(--pad); bottom: clamp(40px, 8vh, 80px); z-index: 3; color: rgba(255,255,255,.75); }
+@media (max-width: 640px) {
+  .slide-next { width: 52px; height: 52px; }
+  .slide-text { right: var(--pad); bottom: 72px; }
+  .slide-count { bottom: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.snap { scroll-behavior: auto; }
+  .slide, .slide.is-active, .slide img { transition: none; }
+}
+
+/* ---------- Home: 3D garage (shown instead of the slider once it is running) ---------- */
+.works { position: relative; }
+.garage { display: none; }
+.garage [hidden] { display: none !important; }
+.works.has-garage .garage { display: block; }
+.works.has-garage .works-slider { display: none; }
+.garage {
+  position: relative; height: 100vh; height: 100svh; min-height: 480px;
+  overflow: hidden; background: var(--bg);
+}
+.garage-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; outline: none; }
+/* The 3D view stays pinned to the screen behind the name screen, so scrolling down reads as dropping into the room
+   while the name screen lifts away and fades. */
+.works.has-garage .garage-canvas { position: fixed; z-index: 0; height: 100vh; height: 100svh; }
+.garage.is-inspecting .garage-canvas { touch-action: none; }
+.garage-loading {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 14px;
+  background: var(--bg); z-index: 5; transition: opacity .6s ease, visibility 0s .6s;
+}
+.garage.is-ready .garage-loading { opacity: 0; visibility: hidden; }
+.garage-bar { width: 180px; height: 2px; background: var(--line); overflow: hidden; }
+.garage-bar span { display: block; height: 100%; width: 0; background: var(--text); transition: width .2s linear; }
+.garage-bar.is-indeterminate span { width: 35%; animation: garage-bar 1.1s ease-in-out infinite; }
+@keyframes garage-bar { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+
+.garage-hint {
+  position: absolute; left: 50%; bottom: clamp(70px, 10vh, 100px); transform: translateX(-50%);
+  z-index: 3; padding: 8px 14px; border-radius: 999px; white-space: nowrap;
+  background: rgba(0,0,0,.55); color: #fff; pointer-events: none; transition: opacity .4s ease;
+}
+.garage.is-inspecting .garage-hint, .garage.has-interacted .garage-hint { opacity: 0; }
+/* hint and project buttons appear once the drop has landed */
+.garage-hint, .garage-list { transition: opacity .5s ease .15s; }
+.garage:not(.is-landed) .garage-hint, .garage:not(.is-landed) .garage-list { opacity: 0; pointer-events: none; }
+
+.garage-tip {
+  position: absolute; left: 0; top: 0; z-index: 4; pointer-events: none;
+  padding: 6px 10px; border-radius: 4px; background: rgba(0,0,0,.75); color: #fff;
+  font-size: 13px; white-space: nowrap; opacity: 0; transition: opacity .15s ease;
+}
+.garage-tip.is-on { opacity: 1; }
+
+.garage-panel {
+  position: absolute; left: var(--pad); bottom: clamp(40px, 8vh, 80px); z-index: 4; max-width: min(560px, 80vw);
+  opacity: 0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease;
+}
+.garage-panel.is-on { opacity: 1; transform: none; }
+.garage-panel .label { color: rgba(255,255,255,.75); margin-bottom: 8px; }
+.garage-panel h2 { font-size: clamp(36px, 6vw, 88px); line-height: .95; letter-spacing: -0.06em; text-shadow: 0 2px 24px rgba(0,0,0,.45); }
+.garage-more {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 12px 20px;
+  border: 1px solid rgba(255,255,255,.7); border-radius: 999px; background: rgba(0,0,0,.4);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  font-size: 15px; transition: background .25s ease, color .25s ease;
+}
+.garage-more:hover, .garage-more:focus-visible { background: #fff; color: #000; }
+.garage-soon { margin-top: 18px; }
+
+.garage-back {
+  position: absolute; left: var(--pad); top: 72px; z-index: 4;
+  padding: 10px 16px; border-radius: 999px; background: rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.4);
+  transition: background .25s ease;
+}
+.garage-back:hover, .garage-back:focus-visible { background: rgba(255,255,255,.15); }
+
+.garage-list {
+  position: absolute; right: var(--pad); bottom: clamp(40px, 8vh, 80px); z-index: 3;
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; max-width: 50vw;
+}
+.garage-list button {
+  padding: 7px 12px; border-radius: 999px; font-size: 12px; text-transform: uppercase; letter-spacing: 0;
+  background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.25); color: rgba(255,255,255,.85);
+  transition: background .2s ease, border-color .2s ease;
+}
+.garage-list button:hover, .garage-list button:focus-visible, .garage-list button[aria-current="true"] { background: rgba(255,255,255,.15); border-color: #fff; color: #fff; }
+@media (max-width: 640px) {
+  .garage-list { left: var(--pad); right: var(--pad); bottom: 22px; max-width: none; justify-content: center; }
+  .garage-panel { bottom: 76px; }
+  .garage-hint { bottom: 76px; }
+}
+
+/* The name screen reads as a solid layer of ground above the garage: a deep shadow falls from its bottom edge. */
+.hero { box-shadow: 0 30px 70px 10px rgba(0,0,0,var(--ground-shadow, .85)); }

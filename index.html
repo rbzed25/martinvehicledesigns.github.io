@@ -12,12 +12,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <script type="importmap">
+    { "imports": {
+        "three": "./assets/js/vendor/three.module.js",
+        "three/addons/": "./assets/js/vendor/jsm/"
+    } }
+  </script>
 </head>
-<body>
+<body class="home">
   <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu"><span class="open">Menu</span><span class="close">Close</span></button>
   <nav class="menu" id="menu" aria-label="Main">
     <a href="index.html">Home</a>
-    <a href="index.html#works">Works</a>
+    <a href="index.html#works">Projects</a>
     <a href="contact.html">Contact</a>
   </nav>
 
@@ -35,55 +41,63 @@
       <h1>Caden Martin</h1>
       <p>Mechanical engineer from Huntington Beach, California</p>
     </div>
-    <a class="scroll-cue" href="#works">Scroll</a>
+    <a class="scroll-cue" href="#works" aria-label="Scroll down to my projects">
+      <span class="cue-word" aria-hidden="true">Projects</span>
+      <svg class="cue-arrow" viewBox="0 0 44 72" aria-hidden="true">
+        <path d="M22 3 C 19 16, 24 27, 20.5 40 S 21.5 56, 21 64" />
+        <path d="M7 47 C 12 53, 17 58, 21.5 65 C 24.5 58, 29 52.5, 36 46.5" />
+      </svg>
+    </a>
   </header>
 
   <main>
-    <section class="section" id="works">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>Selected works</h2>
+    <!-- Works slider: slides show in this order. To add a project, copy one <article> block. -->
+    <section class="works" id="works" aria-label="Works">
+      <!-- 3D garage. Camera positions and links for each project are set at the top of assets/js/garage.js. -->
+      <div class="garage" data-model="assets/models/garage.glb" data-bake="assets/models/garage-bake.webp">
+        <canvas class="garage-canvas" aria-hidden="true"></canvas>
+        <div class="garage-loading" role="status">
+          <p class="label">Opening the garage</p>
+          <div class="garage-bar"><span></span></div>
         </div>
-        <div class="works">
-          <!-- To add a project: copy this <a> block, point it at the new project page and image. -->
-          <a class="work-card reveal" href="projects/997-turbo-cup.html">
-            <div class="media"><img src="assets/img/997horseman/cover.webp" alt="The finished 997 Turbo CUP conversion" width="1800" height="1012"></div>
-            <div class="meta">
-              <div>
-                <h3>997 Turbo CUP</h3>
-                <p>A full 997.1 Turbo to 997.2 CUP conversion with a custom twin-turbo system</p>
-              </div>
-              <span class="year">2026</span>
-            </div>
-          </a>
-          <a class="work-card reveal" href="projects/992-cup.html">
-            <div class="media"><img src="assets/img/992cup/cover.webp" alt="The 992 TT Cup at BBi Autosport" width="1800" height="1013"></div>
-            <div class="meta">
-              <div>
-                <h3>992 TT Cup</h3>
-                <p>An aggressive redesign of a 2020 Porsche Cup car for Pikes Peak</p>
-              </div>
-              <span class="year">2025</span>
-            </div>
-          </a>
+        <p class="garage-hint label">Click a project to take a closer look</p>
+        <div class="garage-tip" aria-hidden="true"></div>
+        <div class="garage-panel" hidden>
+          <p class="label" data-meta></p>
+          <h2 data-title></h2>
+          <a class="garage-more" data-link href="#">See more <span aria-hidden="true">&rarr;</span></a>
+          <p class="garage-soon label" data-soon hidden>Write-up coming soon</p>
         </div>
+        <button class="garage-back" type="button" hidden><span aria-hidden="true">&larr;</span> Back</button>
+        <nav class="garage-list" aria-label="Projects in the garage"></nav>
       </div>
+
+    <div class="works-slider" aria-label="Works" aria-roledescription="carousel">
+      <article class="slide is-active" aria-label="1 of 2">
+        <img src="assets/img/992cup/cover.webp" alt="The 992 TT Cup at BBi Autosport" width="1800" height="1013">
+        <div class="slide-text">
+          <p class="label">2025</p>
+          <h2><a href="projects/992-cup.html">992 TT Cup <span class="go" aria-hidden="true">&rarr;</span></a></h2>
+        </div>
+      </article>
+      <article class="slide" aria-label="2 of 2">
+        <img src="assets/img/997horseman/cover.webp" alt="The finished 997 Turbo CUP conversion" width="1800" height="1012" loading="lazy">
+        <div class="slide-text">
+          <p class="label">2026</p>
+          <h2><a href="projects/997-turbo-cup.html">997 Turbo CUP <span class="go" aria-hidden="true">&rarr;</span></a></h2>
+        </div>
+      </article>
+      <p class="slide-count label" aria-hidden="true"><span data-cur>01</span> / <span data-total>02</span></p>
+      <button class="slide-next" type="button" aria-label="Next work">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+    </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap">
-      <h2>Get in touch</h2>
-      <div class="footer-links">
-        <a data-email="czm1000|gmail.com" href="contact.html">Email</a>
-        <a href="https://www.instagram.com/rbzed25/" target="_blank" rel="noopener">Instagram</a>
-        <a href="contact.html">Contact</a>
-      </div>
-      <small>©<span data-year>2026</span> Caden Martin</small>
-    </div>
-  </footer>
-
   <script src="assets/js/site.js"></script>
   <script src="assets/js/trail.js"></script>
+  <script src="assets/js/works.js"></script>
+  <script type="module" src="assets/js/garage.js"></script>
 </body>
 </html>
